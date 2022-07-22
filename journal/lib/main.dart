@@ -1,6 +1,13 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp
+  ]);
   runApp(const MyApp());
 }
 
@@ -10,11 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mobile Journal',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Welcome'),
     );
   }
 }
@@ -42,25 +49,42 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
+      //LayoutBuilder receives context and constraints from parent and passes it to its builder function
+      body: LayoutBuilder(builder: layoutDecider), 
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+//receives context and constratins from LayoutBuilder 
+Widget layoutDecider(BuildContext context, BoxConstraints constraints) => 
+  constraints.maxWidth < 500 ? VerticalLayout() : HorizontalLayout();
+}
+
+
+class VerticalLayout extends StatelessWidget {
+  const VerticalLayout({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(color: Colors.grey[300]);
+  }
+}
+
+class HorizontalLayout extends StatelessWidget {
+  const HorizontalLayout({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(child: Container(color: Colors.grey[300])),
+        Expanded(child: Container(color: Colors.blue[400],))
+      ],
     );
   }
 }
