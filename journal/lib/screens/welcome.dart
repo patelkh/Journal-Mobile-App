@@ -6,18 +6,25 @@ class Welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const <Widget>[
-          SizedBox(
-            child: Image(image: AssetImage('assets/journalpic.png'))
-          ),
-          Text('Click the \'Add\' icon to get started!', 
-            textAlign: TextAlign.center,),
-        ],
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          // fit: BoxFit.fitHeight,
+          image: AssetImage('assets/journalpic.png'), 
+        )
       ),
+      // child: Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+      //   children: const <Widget>[
+      //     SizedBox(
+      //       child: Image(image: AssetImage('assets/journalpic.png'))
+      //     ),
+      //     Text('Click the \'Add\' icon to get started!', 
+      //       textAlign: TextAlign.center,),
+      //   ],
+      // ),
     );
   }
 }
