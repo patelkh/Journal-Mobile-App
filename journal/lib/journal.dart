@@ -23,6 +23,7 @@ class JournalState extends State<Journal> {
 
   void initUserSettings() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
+
     sleep(Duration(seconds: 2));
     setState(() {
       isDarkMode = preferences.getBool('isDarkMode') ?? false; 

@@ -13,6 +13,7 @@ class JournalEntryForm extends StatefulWidget {
 class _JournalEntryFormState extends State<JournalEntryForm> {
   final formKey = GlobalKey<FormState>(); 
   final journalEntryFields = JournalEntryDTO(); 
+  final int entryRating = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +76,20 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 ),
-                value: 1,
-                items: const[
+                items: const [
                   DropdownMenuItem(value: 1, child: Text('1')), 
                   DropdownMenuItem(value: 2, child: Text('2')),
                   DropdownMenuItem(value: 3, child: Text('3')),
                   DropdownMenuItem(value: 4, child: Text('4')),
                 ], 
-                onChanged: (value) {journalEntryFields.rating.toInt();},
-                onSaved: (value) {journalEntryFields.rating.toInt();},
+                onChanged: (value) {journalEntryFields.rating = value as int;},
+                validator: (value) {
+                  if(value == null) {
+                    return 'Please select a rating from drop down';
+                  } else {
+                    return null; 
+                  }
+                },
               ),
               const SizedBox(height: 10.0,),
               ElevatedButton(
