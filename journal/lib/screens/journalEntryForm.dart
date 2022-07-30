@@ -3,8 +3,10 @@ import 'package:journal/db/databasemanager.dart';
 import 'package:journal/db/journalentryDTO.dart';
 
 class JournalEntryForm extends StatefulWidget {
-  const JournalEntryForm({Key? key}) : super(key: key);
-   static const routeName = 'addEntry';
+  const JournalEntryForm({Key? key, this.updateSettings, this.mode}) : super(key: key);
+
+  final updateSettings;
+  final mode; 
 
   @override
   State<JournalEntryForm> createState() => _JournalEntryFormState();
@@ -19,8 +21,28 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add a Journal Entry'),),
-      // endDrawer: Settings(updateSettings: widget.updateSettings,),
+        title: const Text('Add a Journal Entry'),
+        leading: (ModalRoute.of(context)?.canPop ?? false) ? BackButton() : null),
+      endDrawer: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(
+              height: 80.0,
+              child: DrawerHeader(
+                child: Text('Settings'),
+              ),
+            ),
+            SwitchListTile(
+              value: widget.mode,
+              title: const Text('Dark Mode'),
+              onChanged: (value) => {
+                widget.updateSettings(value)
+              }
+            ),         
+          ],
+        ),
+      ),
       body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -101,10 +123,8 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
                     await databaseManager.db.transaction((txn) async {
                       await txn.rawInsert('INSERT INTO journal_entries(title, body, rating, date) VALUES(?, ?, ?, ?)', [journalEntryFields.title, journalEntryFields.body, journalEntryFields.rating, DateTime.now().toString()]); 
                     });
-                    // await databaseManager.db.close();
                     Navigator.of(context).pushNamed('/');
                   }
-                  // Navigator.of(context).push(MaterialPageRoute(builder: (context) => JournalEntry()));
                 },
               ),
             ],

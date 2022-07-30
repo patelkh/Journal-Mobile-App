@@ -1,16 +1,13 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:journal/models/journal.dart';
 import 'package:journal/models/journalentry.dart';
-import 'package:journal/screens/journalDetails.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:journal/screens/welcome.dart';
-import 'package:journal/widgets/settings.dart';
-
 
 class JournalEntryListScreen extends StatefulWidget {
   final updateSettings;
-  const JournalEntryListScreen({Key? key, this.updateSettings}) : super(key: key);
+  final mode; 
+  const JournalEntryListScreen({Key? key, this.updateSettings, this.mode}) : super(key: key);
 
   @override
   State<JournalEntryListScreen> createState() => _JournalEntryListScreenState();
@@ -20,12 +17,10 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
   late Journal journal = Journal(entries: const []);
   late JournalEntry selectedEntry = JournalEntry.empty();
 
-
   @override
   void initState() {
     super.initState();
     loadJournal();
-    sleep(const Duration(seconds: 3));
   }
 
   void loadJournal() async {
@@ -62,7 +57,26 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Journal')),
-      endDrawer: Settings(updateSettings: widget.updateSettings),
+      endDrawer: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(
+              height: 80.0,
+              child: DrawerHeader(
+                child: Text('Settings'),
+              ),
+            ),
+            SwitchListTile(
+              value: widget.mode,
+              title: const Text('Dark Mode'),
+              onChanged: (value) => {
+                widget.updateSettings(value)
+              }
+            ),         
+          ],
+        ),
+      ),
       body: LayoutBuilder(builder: ((context, constraints) {
         if(constraints.maxWidth >= 500) {
           return horizontalLayout(context, journal);
@@ -93,7 +107,7 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
               subtitle: Text(entry.body),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => JournalDetails(entry: journal.entries[index])));
+                Navigator.of(context).pushNamed('viewEntry', arguments: entry);
               },
             );
           });
@@ -134,7 +148,6 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
               const SizedBox(height: 10.0,),
               Text(selectedEntry.body, style: const TextStyle(fontSize: 16.0),),
               const SizedBox(height: 10.0,),
-
           ],)
         )
       ),

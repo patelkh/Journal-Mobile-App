@@ -13,7 +13,7 @@ class DatabaseManager {
 
   static Future initialize() async {
     String dbSchema = await getDBSchema(); 
-    await deleteDatabase(DATABASE_FILENAME);
+    // await deleteDatabase(DATABASE_FILENAME);
     final db = await openDatabase(
       DATABASE_FILENAME, 
       version: 1,

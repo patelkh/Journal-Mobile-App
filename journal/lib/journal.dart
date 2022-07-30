@@ -1,9 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:journal/screens/journalDetails.dart';
 import 'package:journal/screens/journalEntryList.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/journalEntryForm.dart';
-
 
 class Journal extends StatefulWidget {
   const Journal({Key? key}) : super(key: key);
@@ -14,6 +13,7 @@ class Journal extends StatefulWidget {
 
 class JournalState extends State<Journal> {
   bool isDarkMode = false; 
+  bool get mode => isDarkMode; 
   
   @override
   void initState() {
@@ -23,18 +23,18 @@ class JournalState extends State<Journal> {
 
   void initUserSettings() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    sleep(Duration(seconds: 2));
     setState(() {
       isDarkMode = preferences.getBool('isDarkMode') ?? false; 
       print('User setting from Shared Preference is $isDarkMode');
     });
   }
 
-  void updateSettings(bool setting) {
+  void updateSettings(bool setting) async {
     setState(() {
       isDarkMode = setting; 
     });
+    SharedPreferences preference = await SharedPreferences.getInstance(); 
+    preference.setBool("isDarkMode", setting);
   }
 
   ThemeData currentTheme(bool setting) {
@@ -52,8 +52,9 @@ class JournalState extends State<Journal> {
   @override
   Widget build(BuildContext context) {
     final routes = {
-      '/': (context) => JournalEntryListScreen(updateSettings: updateSettings),
-      'addEntry': (context) => JournalEntryForm()
+      '/': (context) => JournalEntryListScreen(updateSettings: updateSettings, mode: mode),
+      'addEntry': (context) => JournalEntryForm(updateSettings: updateSettings, mode: mode),
+      'viewEntry': (context) => JournalDetails(updateSettings: updateSettings, mode: mode)
     };
     return MaterialApp(
       debugShowCheckedModeBanner: false,
